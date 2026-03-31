@@ -89,22 +89,19 @@ CRITICAL RULES (from SNF therapist expert feedback):
 - Manual therapy is often unintentionally miscoded as 97110 - note this if manual therapy techniques are mentioned
 - If a session has neither 97535 nor 97530, verify - 80-90% of SNF sessions use this combination
 
-GOAL/PLAN DETECTION (CRITICAL):
+GOAL/PLAN DETECTION (SPECIAL HANDLING):
 If the note uses language indicating future plans or goals rather than completed interventions:
 - "Pt has goal of..." / "Pt will work on..." / "Plan to address..." / "Continue with..." / "To improve..."
 - "Patient to participate in..." / "Goals include..." / "Treatment plan..."
 
-STOP and return a single error object instead of extracting codes:
-[
-  {
-    "code": "ERROR",
-    "name": "Incomplete documentation",
-    "narrative": "This input describes treatment goals or plans rather than completed interventions. CPT codes require documentation of services actually provided. Please revise to include: activities performed, assist levels, patient response, and functional outcomes observed during this session.",
-    "confidence": "n/a",
-    "risk": "high",
-    "warning": "Goal statements cannot be coded for billing. Document what actually occurred during the session."
-  }
-]
+Extract codes based on what interventions would REASONABLY be provided for that goal. Write narratives as if the intervention occurred. Keep narratives CONCISE (3-4 sentences maximum). Add this warning to codes extracted from goals:
+
+"Based on goal statement. Verify these interventions were actually provided before billing."
+
+Example: If input is "Pt has goal of improved LB dressing, participation in UB strengthening"
+- Extract 97535 for dressing training
+- Extract 97110 for UB strengthening (clinically justified: arm strength supports LB dressing independence)
+- Keep each narrative to 3-4 sentences focusing on skilled intervention and functional relevance
 
 ABBREVIATION GUIDE:
 - MIN A = minimal assistance
