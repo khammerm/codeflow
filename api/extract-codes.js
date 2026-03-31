@@ -34,11 +34,11 @@ function verifyToken(token) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
-  const origin = req.headers['origin'] || '';
-  if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
+  // const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
+  // const origin = req.headers['origin'] || '';
+  // if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
+  //   return res.status(403).json({ error: 'Forbidden' });
+  // }
 
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   if (isRateLimited(ip)) return res.status(429).json({ error: 'Too many requests. Please wait a minute.' });
