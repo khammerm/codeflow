@@ -34,12 +34,17 @@ function verifyToken(token) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // TEMPORARILY DISABLED CORS CHECK - UNCOMMENT AFTER TESTING
-  // const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
-  // const origin = req.headers['origin'] || '';
-  // if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
-  //   return res.status(403).json({ error: 'Forbidden' });
-  // }
+  // CORS security - allow same-origin OR specific allowed origins
+  const origin = req.headers['origin'];
+  const allowedOrigin = process.env.ALLOWED_ORIGIN; // e.g., https://codeflow-silk.vercel.app
+  
+  // If there's an origin header AND it doesn't match allowed origin, block it
+  if (origin && allowedOrigin && origin !== allowedOrigin) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  
+  // Allow same-origin requests (no origin header) and matching origins
+  // This is correct because same-origin requests don't send Origin header
 
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   if (isRateLimited(ip)) return res.status(429).json({ error: 'Too many requests. Please wait a minute.' });
