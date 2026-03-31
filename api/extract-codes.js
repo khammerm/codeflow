@@ -34,6 +34,7 @@ function verifyToken(token) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // TEMPORARILY DISABLED CORS CHECK - UNCOMMENT AFTER TESTING
   // const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
   // const origin = req.headers['origin'] || '';
   // if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
@@ -88,6 +89,23 @@ CRITICAL RULES (from SNF therapist expert feedback):
 - Manual therapy is often unintentionally miscoded as 97110 - note this if manual therapy techniques are mentioned
 - If a session has neither 97535 nor 97530, verify - 80-90% of SNF sessions use this combination
 
+GOAL/PLAN DETECTION (CRITICAL):
+If the note uses language indicating future plans or goals rather than completed interventions:
+- "Pt has goal of..." / "Pt will work on..." / "Plan to address..." / "Continue with..." / "To improve..."
+- "Patient to participate in..." / "Goals include..." / "Treatment plan..."
+
+STOP and return a single error object instead of extracting codes:
+[
+  {
+    "code": "ERROR",
+    "name": "Incomplete documentation",
+    "narrative": "This input describes treatment goals or plans rather than completed interventions. CPT codes require documentation of services actually provided. Please revise to include: activities performed, assist levels, patient response, and functional outcomes observed during this session.",
+    "confidence": "n/a",
+    "risk": "high",
+    "warning": "Goal statements cannot be coded for billing. Document what actually occurred during the session."
+  }
+]
+
 ABBREVIATION GUIDE:
 - MIN A = minimal assistance
 - MOD A = moderate assistance  
@@ -124,20 +142,7 @@ CRITICAL:
 - Write the narrative as ONE flowing paragraph that reads naturally when copied into an EMR
 - Include specific details from the note (assist levels, specific activities) in the narrative
 - Explain WHY it's skilled OT/PT within the same paragraph
-- Return ONLY the JSON array. No markdown, no backticks, no preamble, no explanation. First character must be [ and last must be ].
-
-GOAL/PLAN DETECTION:
-If the note uses language like:
-- "Pt has goal of..."
-- "Pt will work on..."
-- "Plan to address..."
-- "Continue with..."
-- "To improve..."
-
-Flag with HIGH risk warning: "This appears to describe treatment goals or plans 
-rather than completed interventions. CPT codes should only be assigned for 
-services actually provided during the documented session. Please revise to 
-describe what occurred."`;
+- Return ONLY the JSON array. No markdown, no backticks, no preamble, no explanation. First character must be [ and last must be ].`;
 
   const userPrompt = `Clinical note:
 ${trimmed}
@@ -146,7 +151,7 @@ Extract all applicable CPT codes with compliance-focused justifications. Return 
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
