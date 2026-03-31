@@ -147,11 +147,20 @@
   <div class="nav-right">
     <span id="statusBadge" class="nav-badge">Free Trial</span>
     <button id="upgradeBtn" class="btn-upgrade" onclick="window.open('https://buy.stripe.com/3cIdR84YX78d4y55ACb7y02', '_blank')">Upgrade to Pro</button>
+<<<<<<< Updated upstream
+=======
+    <!-- TODO: Replace above Stripe link with your new $99/mo CodeFlow payment link -->
+>>>>>>> Stashed changes
   </div>
 </nav>
 
 <div class="container">
   
+  <div style="background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%); border: 1px solid #d0dbe6; border-radius: 10px; padding: 14px 20px; margin-bottom: 24px; text-align: center; font-size: 13px; color: #6b7d8f;">
+    Need to <strong>generate a clinical note</strong> first? 
+    <a href="https://otflow.site" target="_blank" style="color: #3a7abf; font-weight: 600; text-decoration: none; margin-left: 4px;">Try OTFlow →</a>
+  </div>
+
   <div class="page-header">
     <h1>CPT Code Extraction for OT/PT</h1>
     <p class="subheading">Paste your clinical note and get CPT codes with compliance-focused justifications. Built for SNF, home health, and outpatient therapists.</p>
@@ -231,6 +240,17 @@
   let currentCodes = [];
 
   function init() {
+    // Check for note parameter from OTFlow
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefilledNote = urlParams.get('note');
+    if (prefilledNote) {
+      document.getElementById('clinicalNote').value = decodeURIComponent(prefilledNote);
+      // Scroll to input
+      setTimeout(() => {
+        document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+    
     if (isPro) {
       document.getElementById('statusBadge').textContent = `Pro · ${proEmail}`;
       document.getElementById('statusBadge').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
