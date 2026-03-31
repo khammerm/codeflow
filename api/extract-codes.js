@@ -124,7 +124,20 @@ CRITICAL:
 - Write the narrative as ONE flowing paragraph that reads naturally when copied into an EMR
 - Include specific details from the note (assist levels, specific activities) in the narrative
 - Explain WHY it's skilled OT/PT within the same paragraph
-- Return ONLY the JSON array. No markdown, no backticks, no preamble, no explanation. First character must be [ and last must be ].`;
+- Return ONLY the JSON array. No markdown, no backticks, no preamble, no explanation. First character must be [ and last must be ].
+
+GOAL/PLAN DETECTION:
+If the note uses language like:
+- "Pt has goal of..."
+- "Pt will work on..."
+- "Plan to address..."
+- "Continue with..."
+- "To improve..."
+
+Flag with HIGH risk warning: "This appears to describe treatment goals or plans 
+rather than completed interventions. CPT codes should only be assigned for 
+services actually provided during the documented session. Please revise to 
+describe what occurred."`;
 
   const userPrompt = `Clinical note:
 ${trimmed}
