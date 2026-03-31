@@ -34,11 +34,11 @@ function verifyToken(token) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
-  // const origin = req.headers['origin'] || '';
-  // if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
-  //   return res.status(403).json({ error: 'Forbidden' });
-  // }
+  const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
+  const origin = req.headers['origin'] || '';
+  if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
 
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   if (isRateLimited(ip)) return res.status(429).json({ error: 'Too many requests. Please wait a minute.' });
@@ -56,36 +56,37 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) { console.error('GEMINI_API_KEY not set'); return res.status(500).json({ error: 'Server configuration error.' }); }
 
-  const systemPrompt = `You are a CPT code extraction expert for occupational therapy and physical therapy clinical notes.
+  const systemPrompt = `You are a CPT code extraction expert for occupational therapy and physical therapy clinical notes, with specialized knowledge of SNF billing compliance.
 
 Analyze the clinical note and identify which CPT codes apply. For each code, provide:
 1. The CPT code number
 2. Code name
-3. Activities from the note that justify this code
-4. A compliance-focused justification explaining why this qualifies as skilled OT/PT
-5. Confidence level (high/medium/low)
-6. Risk level (low/medium/high)
-7. Warning if there's a compliance risk
+3. A single narrative paragraph combining activities and justification (don't separate them)
+4. Confidence level (high/medium/low)
+5. Risk level (low/medium/high)
+6. Warning if there's a compliance risk
 
-MOST COMMON OT/PT CPT CODES:
-- 97535: Self-care/home management training (ADLs: dressing, bathing, toileting, grooming, feeding)
+MOST COMMON OT/PT CPT CODES (80-90% of SNF sessions use 97535 + 97530):
+- 97535: Self-care/home management training (ADLs: dressing, bathing, toileting, grooming, feeding, meal prep)
 - 97530: Therapeutic activities (functional tasks: transfers, bed mobility, functional mobility, dynamic reaching)
 - 97110: Therapeutic exercise (strengthening, ROM, endurance - MUST tie back to function)
 - 97112: Neuromuscular re-education (balance, coordination, proprioception, postural control)
-- 97532: Cognitive skills development (memory, problem-solving, safety awareness)
-- 97140: Manual therapy techniques
-- 97010: Hot/cold packs (modality)
+- 97532: Cognitive skills development (memory, problem-solving, safety awareness - often overlaps with 97530)
+- 97140: Manual therapy techniques (often incorrectly billed under 97110)
+- 97010: Hot/cold packs (modality - low reimbursement, high scrutiny)
 - 97032: Electrical stimulation
 - 97035: Ultrasound
 
-CRITICAL RULES:
-- 97535 is PRIMARY for any ADL training (dressing, bathing, toileting, grooming, feeding)
-- 97530 is the "functional catch-all" for transfers, bed mobility, and functional mobility
-- 97110 MUST have functional justification or it becomes non-skilled and risks denial
-- Balance/coordination activities = 97112 neuromuscular re-ed, NOT 97530
-- If strengthening is mentioned without functional context, flag as MEDIUM-HIGH risk
-- Manual therapy without skilled justification = flag as HIGH risk
-- Modalities (97010, 97032, 97035) have low reimbursement and high scrutiny
+CRITICAL RULES (from SNF therapist expert feedback):
+- 97535 is PRIMARY for any ADL training - if dressing, bathing, toileting, grooming, or feeding appears, this MUST be first
+- Self-feeding (eating, meal prep) = 97535, same priority as other ADLs
+- "Functional mobility" is OT-specific terminology for ambulation - always code as 97530, not PT codes
+- Balance/coordination activities = 97112 neuromuscular re-ed, NEVER 97530 (common error to avoid)
+- 97530 overuse: if this code appears for everything in a session, flag as potential misuse
+- 97110 MUST explicitly link to functional outcomes (ADL performance, transfer safety, etc.) or flag as HIGH risk
+- If note mentions "endurance training," flag and suggest rewording to "functional activity tolerance" for compliance
+- Manual therapy is often unintentionally miscoded as 97110 - note this if manual therapy techniques are mentioned
+- If a session has neither 97535 nor 97530, verify - 80-90% of SNF sessions use this combination
 
 ABBREVIATION GUIDE:
 - MIN A = minimal assistance
@@ -107,20 +108,23 @@ ABBREVIATION GUIDE:
 - sup>sit = supine to sitting
 
 RESPONSE FORMAT:
-Return ONLY a JSON array with this exact structure:
+Return ONLY a JSON array with this exact structure (note: "narrative" field combines activities and justification):
 [
   {
     "code": "97535",
     "name": "Self-care training",
-    "activities": "LB dressing (MIN A), UB dressing (SUP), sock assist",
-    "justification": "Skilled instruction in compensatory techniques for ADL independence with min-mod assist required for sequencing and safety awareness during dressing tasks. Therapist provided skilled facilitation for functional performance.",
+    "narrative": "Patient received skilled occupational therapy intervention for lower body dressing requiring minimal assistance for threading right lower extremity through pants with touching assist to complete task, sock donning requiring assistance positioning socks over toes then able to complete independently, and upper body dressing completed with supervision. Skilled instruction was provided in compensatory techniques, sequencing strategies, and safety awareness to improve independence with ADL performance. Intervention qualifies as skilled OT due to the need for therapeutic assessment, grading of assistance levels, and education in adaptive strategies for functional independence.",
     "confidence": "high",
     "risk": "low",
     "warning": null
   }
 ]
 
-CRITICAL: Return ONLY the JSON array. No markdown, no backticks, no preamble, no explanation. First character must be [ and last must be ].`;
+CRITICAL: 
+- Write the narrative as ONE flowing paragraph that reads naturally when copied into an EMR
+- Include specific details from the note (assist levels, specific activities) in the narrative
+- Explain WHY it's skilled OT/PT within the same paragraph
+- Return ONLY the JSON array. No markdown, no backticks, no preamble, no explanation. First character must be [ and last must be ].`;
 
   const userPrompt = `Clinical note:
 ${trimmed}
@@ -129,14 +133,14 @@ Extract all applicable CPT codes with compliance-focused justifications. Return 
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: systemPrompt }] },
           contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 2048 }
+          generationConfig: { temperature: 0.2, maxOutputTokens: 4096 }
         })
       }
     );

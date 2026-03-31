@@ -147,6 +147,7 @@
   <div class="nav-right">
     <span id="statusBadge" class="nav-badge">Free Trial</span>
     <button id="upgradeBtn" class="btn-upgrade" onclick="window.open('https://buy.stripe.com/3cIdR84YX78d4y55ACb7y02', '_blank')">Upgrade to Pro</button>
+    <!-- TODO: Replace above Stripe link with your new $99/mo CodeFlow payment link -->
   </div>
 </nav>
 
@@ -310,12 +311,7 @@
           <div class="confidence-badge confidence-${code.confidence}">${code.confidence} confidence</div>
         </div>
         <div class="code-section">
-          <strong>Activities</strong>
-          <p>${code.activities}</p>
-        </div>
-        <div class="code-section">
-          <strong>Justification</strong>
-          <p>${code.justification}</p>
+          <p>${code.narrative}</p>
         </div>
         ${code.warning ? `<div class="risk-warning">${code.warning}</div>` : ''}
       </div>
@@ -327,8 +323,7 @@
     currentCodes.forEach((code, i) => {
       text += `${i + 1}. ${code.code} — ${code.name}\n`;
       text += `   Confidence: ${code.confidence.toUpperCase()}\n`;
-      text += `   Activities: ${code.activities}\n`;
-      text += `   Justification: ${code.justification}\n`;
+      text += `   ${code.narrative}\n`;
       if (code.warning) text += `   ⚠️ Warning: ${code.warning}\n`;
       text += '\n';
     });
