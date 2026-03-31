@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CodeFlow — CPT Code Extraction for OT/PT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface2: #e8eef4;
+    --border: #d0dbe6;
+    --accent: #0066cc;
+    --accent-light: #e8f1fb;
+    --accent-dark: #0052a3;
+    --text: #1a2332;
+    --text-muted: #6b7d8f;
+    --danger: #c0392b;
+    --warning: #ff9800;
+    --success: #4caf50;
+    --serif: 'Lora', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --radius: 14px;
+    --shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo { font-family: var(--serif); font-size: 22px; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+  .logo em { font-style: italic; color: var(--accent); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-badge { font-size: 11px; background: var(--accent-light); color: var(--accent-dark); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+  .btn-upgrade { font-size: 12px; font-family: var(--sans); font-weight: 500; color: white; background: var(--accent); border: none; padding: 7px 16px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+  .btn-upgrade:hover { background: var(--accent-dark); }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .page-header { text-align: center; margin-bottom: 40px; }
+  .page-header h1 { font-family: var(--serif); font-size: 36px; color: var(--accent-dark); letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 16px; font-weight: 500; }
+  .page-header .subheading { color: var(--text); font-size: 17px; line-height: 1.6; max-width: 700px; margin: 0 auto 20px; font-weight: 400; }
+
+  .usage-bar { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .usage-left { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
+  .usage-pips { display: flex; gap: 4px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+  .pip.used { background: var(--accent); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
+  .card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-family: var(--serif); font-size: 17px; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
+  .card-hint { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+  .card-body { padding: 24px; }
+
+  .notes-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); display: block; margin-bottom: 6px; }
+  textarea { width: 100%; min-height: 200px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); resize: vertical; outline: none; transition: border-color 0.15s; }
+  textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
+  textarea::placeholder { color: #b0bec8; font-weight: 300; }
+
+  .btn-extract { width: 100%; margin-top: 18px; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: var(--serif); font-size: 18px; font-style: italic; cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,102,204,0.3); }
+  .btn-extract:hover:not(:disabled) { background: var(--accent-dark); transform: translateY(-1px); }
+  .btn-extract:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+  .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.75s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box { margin-top: 14px; background: #fdf0ef; border: 1px solid #f0c4c0; color: var(--danger); padding: 12px 16px; border-radius: 8px; font-size: 13px; display: none; }
+  .error-box.show { display: block; }
+
+  .output-card { display: none; animation: fadeUp 0.4s ease; }
+  .output-card.show { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .code-card { background: var(--bg); border-left: 4px solid var(--accent); border-radius: 10px; padding: 20px; margin-bottom: 16px; position: relative; }
+  .code-card.risk-medium { border-left-color: var(--warning); }
+  .code-card.risk-high { border-left-color: var(--danger); }
+
+  .code-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 16px; }
+  .code-title { font-family: var(--serif); font-size: 18px; color: var(--accent-dark); font-weight: 600; flex: 1; }
+  .confidence-badge { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; flex-shrink: 0; }
+  .confidence-high { background: var(--success); color: white; }
+  .confidence-medium { background: var(--warning); color: white; }
+  .confidence-low { background: var(--danger); color: white; }
+
+  .code-section { margin: 10px 0; font-size: 14px; }
+  .code-section strong { color: var(--accent-dark); font-weight: 600; display: block; margin-bottom: 4px; }
+  .code-section p { color: var(--text); line-height: 1.7; margin: 0; }
+
+  .risk-warning { background: #fff3cd; border: 1px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin-top: 12px; font-size: 13px; color: #856404; line-height: 1.6; }
+  .risk-warning::before { content: '⚠️ '; }
+
+  .output-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .btn-action { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2); color: var(--text); font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn-action:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent-dark); }
+  .btn-action.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-action.primary:hover { background: var(--accent-dark); }
+
+  .disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; max-width: 700px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
+
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; padding: 24px; }
+  .modal-backdrop.show { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; max-width: 400px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.15); }
+  .modal h2 { font-family: var(--serif); font-size: 22px; color: var(--accent-dark); margin-bottom: 6px; }
+  .modal h2 em { font-style: italic; color: var(--accent); }
+  .modal p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
+  .modal .field { margin-bottom: 16px; }
+  .field-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); }
+  .field input { width: 100%; font-family: var(--sans); font-size: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; margin-top: 5px; }
+  .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
+  .restore-msg { font-size: 12px; margin-top: 12px; padding: 8px 12px; border-radius: 6px; }
+  .restore-msg.error { background: #fdf0ef; color: var(--danger); border: 1px solid #f0c4c0; }
+  .restore-msg.success { background: #e8f8f0; color: #27ae60; border: 1px solid #a8e6cf; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-btn { flex: 1; padding: 10px; border-radius: 8px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; border: none; }
+  .modal-btn.primary { background: var(--accent); color: white; }
+  .modal-btn.primary:hover { background: var(--accent-dark); }
+  .modal-btn.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .modal-btn.secondary:hover { background: var(--bg); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .logo { font-size: 18px; }
+    .container { padding: 32px 16px 64px; }
+    .page-header h1 { font-size: 28px; }
+    .page-header .subheading { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Code<em>Flow</em>
+  </div>
+  <div class="nav-right">
+    <span id="statusBadge" class="nav-badge">Free Trial</span>
+    <button id="upgradeBtn" class="btn-upgrade" onclick="window.open('https://buy.stripe.com/cNi00i8b95055C9e78b7y00', '_blank')">Upgrade to Pro</button>
+  </div>
+</nav>
+
+<div class="container">
+  
+  <div class="page-header">
+    <h1>CPT Code Extraction for OT/PT</h1>
+    <p class="subheading">Paste your clinical note and get CPT codes with compliance-focused justifications. Built for SNF, home health, and outpatient therapists.</p>
+  </div>
+
+  <div id="usageBar" class="usage-bar">
+    <div class="usage-left">
+      <span>Free trial</span>
+      <div class="usage-pips">
+        <div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div>
+      </div>
+    </div>
+    <button onclick="openRestore()" style="font-size: 11px; background: transparent; border: none; color: var(--accent); cursor: pointer; text-decoration: underline; font-family: var(--sans); font-weight: 500;">Already a subscriber?</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📋 Clinical Note</div>
+      <div class="card-hint">Paste your raw clinical note below</div>
+    </div>
+    <div class="card-body">
+      <label class="notes-label">Your Clinical Note</label>
+      <textarea id="clinicalNote" placeholder="Pt received sup in bed with bed in semifowler pos. Pt performed bed mobility to EOB at MIN A for support in rolling to R and reaching with LUE for support. Pt instructed in hand positioning for pushing from sup>sit..."></textarea>
+
+      <button class="btn-extract" id="extractBtn" onclick="extractCodes()">
+        <span id="btnText">Extract CPT Codes</span>
+      </button>
+
+      <div class="error-box" id="errorBox"></div>
+    </div>
+  </div>
+
+  <div class="card output-card" id="outputCard">
+    <div class="card-header">
+      <div class="card-title">✨ CPT Codes Identified</div>
+    </div>
+    <div class="card-body">
+      <div id="codeResults"></div>
+      <div class="output-actions">
+        <button class="btn-action primary" id="copyBtn" onclick="copyCodes()">📋 Copy All Codes</button>
+        <button class="btn-action" onclick="newExtraction()">🔄 New Extraction</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    CodeFlow provides CPT code suggestions for billing compliance. All codes should be reviewed by a licensed therapist before submission. 
+    You are responsible for ensuring billing accuracy and compliance with payer requirements.
+  </p>
+
+</div>
+
+<div class="modal-backdrop" id="restoreModal">
+  <div class="modal">
+    <h2>Restore <em>Pro</em> Access</h2>
+    <p>Enter the email address you used when purchasing. We'll restore your unlimited access.</p>
+    <div class="field">
+      <label class="field-label">Email</label>
+      <input type="email" id="restoreEmail" placeholder="you@example.com"/>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeRestore()">Cancel</button>
+      <button class="modal-btn primary" id="restoreBtn" onclick="restoreAccess()">Restore access</button>
+    </div>
+    <div class="restore-msg" id="restoreMsg"></div>
+  </div>
+</div>
+
+<script>
+  let usage = parseInt(localStorage.getItem('codeflow_usage') || '0');
+  const MAX_FREE = 5;
+
+  const proToken = localStorage.getItem('codeflow_pro_token');
+  const proEmail = localStorage.getItem('codeflow_pro_email');
+  const isPro = !!proToken;
+
+  let currentCodes = [];
+
+  function init() {
+    if (isPro) {
+      document.getElementById('statusBadge').textContent = `Pro · ${proEmail}`;
+      document.getElementById('statusBadge').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+      document.getElementById('statusBadge').style.color = 'white';
+      document.getElementById('upgradeBtn').style.display = 'none';
+      document.getElementById('usageBar').style.display = 'none';
+    } else {
+      renderPips();
+    }
+  }
+
+  function renderPips() {
+    const pips = document.querySelectorAll('.pip');
+    pips.forEach((p, i) => p.classList.toggle('used', i < usage));
+  }
+
+  async function extractCodes() {
+    hideError();
+    
+    if (!isPro && usage >= MAX_FREE) {
+      showError(`You've used all ${MAX_FREE} free extractions. Upgrade to Pro for unlimited access.`);
+      return;
+    }
+
+    const note = document.getElementById('clinicalNote').value;
+    if (!note.trim()) { showError('Please enter a clinical note.'); return; }
+    if (note.trim().length < 50) { showError('Clinical note is too short. Add more detail.'); return; }
+
+    setLoading(true);
+
+    const payload = { note };
+    const headers = { 'Content-Type': 'application/json' };
+    if (proToken) headers['Authorization'] = `Bearer ${proToken}`;
+
+    try {
+      const res = await fetch('/api/extract-codes', { method: 'POST', headers, body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      
+      currentCodes = data.codes;
+      renderCodes(data.codes);
+      
+      if (!isPro) { usage++; localStorage.setItem('codeflow_usage', usage); renderPips(); }
+      
+      document.getElementById('outputCard').classList.add('show');
+      document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function renderCodes(codes) {
+    const container = document.getElementById('codeResults');
+    container.innerHTML = codes.map(code => `
+      <div class="code-card risk-${code.risk}">
+        <div class="code-header">
+          <div class="code-title">${code.code} — ${code.name}</div>
+          <div class="confidence-badge confidence-${code.confidence}">${code.confidence} confidence</div>
+        </div>
+        <div class="code-section">
+          <strong>Activities</strong>
+          <p>${code.activities}</p>
+        </div>
+        <div class="code-section">
+          <strong>Justification</strong>
+          <p>${code.justification}</p>
+        </div>
+        ${code.warning ? `<div class="risk-warning">${code.warning}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  function copyCodes() {
+    let text = 'CPT CODES IDENTIFIED:\n\n';
+    currentCodes.forEach((code, i) => {
+      text += `${i + 1}. ${code.code} — ${code.name}\n`;
+      text += `   Confidence: ${code.confidence.toUpperCase()}\n`;
+      text += `   Activities: ${code.activities}\n`;
+      text += `   Justification: ${code.justification}\n`;
+      if (code.warning) text += `   ⚠️ Warning: ${code.warning}\n`;
+      text += '\n';
+    });
+    text += '——\nGenerated with CodeFlow. Review before billing.';
+    
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = orig, 2500);
+    });
+  }
+
+  function newExtraction() {
+    document.getElementById('clinicalNote').value = '';
+    document.getElementById('outputCard').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function setLoading(on) {
+    const btn = document.getElementById('extractBtn');
+    btn.disabled = on;
+    btn.innerHTML = on ? '<div class="spinner"></div><span>Analyzing note...</span>' : '<span id="btnText">Extract CPT Codes</span>';
+  }
+
+  function showError(msg) { const el = document.getElementById('errorBox'); el.textContent = '⚠ ' + msg; el.classList.add('show'); }
+  function hideError() { document.getElementById('errorBox').classList.remove('show'); }
+
+  function openRestore() { document.getElementById('restoreModal').classList.add('show'); setTimeout(() => document.getElementById('restoreEmail').focus(), 100); }
+  function closeRestore() { document.getElementById('restoreModal').classList.remove('show'); document.getElementById('restoreEmail').value = ''; document.getElementById('restoreMsg').textContent = ''; }
+
+  async function restoreAccess() {
+    const email = document.getElementById('restoreEmail').value.trim();
+    if (!email) { showRestoreMsg('Please enter your email.', 'error'); return; }
+    const btn = document.getElementById('restoreBtn');
+    btn.disabled = true; btn.textContent = 'Checking...';
+    try {
+      const res = await fetch('/api/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      localStorage.setItem('codeflow_pro_token', data.token);
+      localStorage.setItem('codeflow_pro_email', data.email);
+      localStorage.removeItem('codeflow_usage');
+      showRestoreMsg('Pro access restored! Reloading...', 'success');
+      setTimeout(() => location.reload(), 1200);
+    } catch (err) {
+      showRestoreMsg(err.message, 'error');
+      btn.disabled = false; btn.textContent = 'Restore access';
+    }
+  }
+
+  function showRestoreMsg(msg, type) { const el = document.getElementById('restoreMsg'); el.textContent = msg; el.className = 'restore-msg' + (type ? ' ' + type : ''); }
+
+  init();
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
