@@ -376,7 +376,51 @@
 
   function showRestoreMsg(msg, type) { const el = document.getElementById('restoreMsg'); el.textContent = msg; el.className = 'restore-msg' + (type ? ' ' + type : ''); }
 
+  // Handle Stripe payment success redirect
+  async function handleStripeSuccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const sessionId = urlParams.get('session_id');
+    
+    if (success === 'true' && sessionId) {
+      // Show loading state
+      const statusBadge = document.getElementById('statusBadge');
+      statusBadge.textContent = 'Verifying payment...';
+      statusBadge.style.background = '#fbbf24';
+      
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok && data.token) {
+          // Store Pro token
+          localStorage.setItem('codeflow_pro_token', data.token);
+          localStorage.setItem('codeflow_pro_email', data.email);
+          localStorage.removeItem('codeflow_usage');
+          
+          // Reload to show Pro status (removes query params)
+          window.location.href = window.location.origin;
+        } else {
+          statusBadge.textContent = 'Verification failed';
+          statusBadge.style.background = '#ef4444';
+          alert('Payment verification failed. Please contact support or use "Already a subscriber?" to restore access.');
+        }
+      } catch (err) {
+        console.error('Verification error:', err);
+        statusBadge.textContent = 'Verification failed';
+        statusBadge.style.background = '#ef4444';
+        alert('Payment verification failed. Please contact support or use "Already a subscriber?" to restore access.');
+      }
+    }
+  }
+
   init();
+  handleStripeSuccess();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
