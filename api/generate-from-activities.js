@@ -122,28 +122,32 @@ The user has selected specific activities they performed during a therapy sessio
 
 ACTIVITY-TO-CODE MAPPING:
 
-Upper Body Strengthening activities → 97110 Therapeutic Exercise
-- Examples: shoulder flexion, chest press, triceps, overhead press, trunk rotation
+ADL Training (Self-Care) activities → 97535 Self-care Training (PRIMARY CODE)
+- Examples: dressing, bathing, grooming, toileting, feeding, meal prep
+- This code MUST be listed FIRST when ADL activities are present
+- Heather's rule: "97535 is PRIMARY for any ADL training"
+
+Functional Mobility activities → 97530 Therapeutic Activities
+- Examples: transfers, bed mobility, sit-to-stand, functional reaching, ambulation
+- Note: "Functional mobility" is OT-specific term for ambulation
+- Often paired with 97535 in SNF sessions
+
+Balance & Coordination activities → 97112 Neuromuscular Re-education
+- Examples: static balance, single-leg stance, weight shifts, dual-task balance
+- NOT 97530 (common error to avoid)
+
+Upper Body/Core/Hand Strengthening activities → 97110 Therapeutic Exercise
+- Examples: shoulder flexion, chest press, core work, hand strengthening
 - CRITICAL: Must tie to functional outcomes (ADL performance, transfer safety, etc.)
-- If no functional tie-in mentioned, flag as HIGH risk
+- If no functional tie-in or no ADL activities selected, flag as HIGH risk
 
-Core Strengthening activities → 97110 Therapeutic Exercise  
-- Examples: medicine ball work, planks, trunk exercises
-- Must relate to functional mobility, postural control, or ADL performance
+CODE PRIORITY (when multiple categories selected):
+1. 97535 (ADL Training) - ALWAYS first if present
+2. 97530 (Functional Mobility) - Second priority
+3. 97110 (Strengthening) - Third priority  
+4. 97112 (Balance) - Fourth priority
 
-Hand Strengthening activities → 97110 Therapeutic Exercise
-- Examples: putty, pinches, grip work, pegboard
-- Should connect to fine motor ADLs (dressing, grooming, feeding)
-
-ADL Training (if mentioned) → 97535 Self-care Training (PRIMARY)
-- Dressing, bathing, toileting, grooming, feeding
-- This code takes priority over all others when ADLs are involved
-
-Functional Mobility (if mentioned) → 97530 Therapeutic Activities
-- Transfers, bed mobility, functional reaching
-
-Balance/Coordination → 97112 Neuromuscular Re-education
-- NOT 97530 (common error)
+Heather's guidance: "80-90% of SNF sessions use 97535 + 97530 combination"
 
 CRITICAL RULES:
 - 97110 without functional justification = HIGH risk flag
@@ -174,6 +178,9 @@ Return ONLY a JSON array:
 
 If activities don't clearly map to functional goals, include this warning:
 "Ensure documentation includes specific functional goals these exercises are addressing to demonstrate medical necessity."
+
+If ONLY strengthening activities are selected (no ADL or functional mobility), include this additional warning:
+"Consider: 80-90% of SNF sessions include ADL training (97535) and/or functional mobility (97530) alongside strengthening. Strengthening alone may require additional justification for medical necessity."
 
 Return ONLY the JSON array. No markdown, no backticks, no preamble. First character must be [ and last must be ].`;
 
