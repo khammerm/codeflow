@@ -13,11 +13,12 @@ function signToken(email) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
-  const origin = req.headers['origin'] || '';
-  if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
+  // CORS disabled - same as extract-codes.js
+  // const allowedOrigins = [process.env.ALLOWED_ORIGIN, 'http://localhost:3000'].filter(Boolean);
+  // const origin = req.headers['origin'] || '';
+  // if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
+  //   return res.status(403).json({ error: 'Forbidden' });
+  // }
 
   const { email } = req.body || {};
   if (!email || typeof email !== 'string') return res.status(400).json({ error: 'Email is required.' });

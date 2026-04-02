@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CodeFlow — CPT Code Extraction for OT/PT</title>
+<title>CodeFlow — CPT Code Documentation for OT/PT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
 <script>
@@ -50,7 +50,7 @@
   .btn-upgrade { font-size: 12px; font-family: var(--sans); font-weight: 500; color: white; background: var(--accent); border: none; padding: 7px 16px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
   .btn-upgrade:hover { background: var(--accent-dark); }
 
-  .container { max-width: 1000px; margin: 0 auto; padding: 48px 24px 96px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
 
   .page-header { text-align: center; margin-bottom: 40px; }
   .page-header h1 { font-family: var(--serif); font-size: 36px; color: var(--accent-dark); letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 16px; font-weight: 500; }
@@ -65,17 +65,26 @@
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
   .card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .card-title { font-family: var(--serif); font-size: 17px; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
-  .card-hint { font-size: 12px; color: var(--text-muted); font-weight: 300; }
   .card-body { padding: 24px; }
 
-  .notes-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); display: block; margin-bottom: 6px; }
-  textarea { width: 100%; min-height: 200px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); resize: vertical; outline: none; transition: border-color 0.15s; }
-  textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
-  textarea::placeholder { color: #b0bec8; font-weight: 300; }
+  .activity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+  
+  .category { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .category-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer; user-select: none; }
+  .category-checkbox { width: 20px; height: 20px; cursor: pointer; }
+  .category-title { font-family: var(--serif); font-size: 16px; color: var(--accent-dark); font-weight: 600; flex: 1; }
+  .category-count { font-size: 12px; color: var(--text-muted); }
+  
+  .activities { display: none; }
+  .activities.show { display: block; }
+  
+  .activity-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
+  .activity-checkbox { margin-top: 2px; cursor: pointer; }
+  .activity-label { font-size: 14px; color: var(--text); cursor: pointer; flex: 1; }
 
-  .btn-extract { width: 100%; margin-top: 18px; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: var(--serif); font-size: 18px; font-style: italic; cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,102,204,0.3); }
-  .btn-extract:hover:not(:disabled) { background: var(--accent-dark); transform: translateY(-1px); }
-  .btn-extract:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-generate { width: 100%; margin-top: 18px; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: var(--serif); font-size: 18px; font-style: italic; cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,102,204,0.3); }
+  .btn-generate:hover:not(:disabled) { background: var(--accent-dark); transform: translateY(-1px); }
+  .btn-generate:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
   .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.75s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -98,7 +107,6 @@
   .confidence-low { background: var(--danger); color: white; }
 
   .code-section { margin: 10px 0; font-size: 14px; }
-  .code-section strong { color: var(--accent-dark); font-weight: 600; display: block; margin-bottom: 4px; }
   .code-section p { color: var(--text); line-height: 1.7; margin: 0; }
 
   .risk-warning { background: #fff3cd; border: 1px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin-top: 12px; font-size: 13px; color: #856404; line-height: 1.6; }
@@ -138,6 +146,7 @@
     .container { padding: 32px 16px 64px; }
     .page-header h1 { font-size: 28px; }
     .page-header .subheading { font-size: 15px; }
+    .activity-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -156,14 +165,9 @@
 
 <div class="container">
   
-  <div style="background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%); border: 1px solid #d0dbe6; border-radius: 10px; padding: 14px 20px; margin-bottom: 24px; text-align: center; font-size: 13px; color: #6b7d8f;">
-    Need to <strong>generate a clinical note</strong> first? 
-    <a href="https://otflow.site" target="_blank" style="color: #3a7abf; font-weight: 600; text-decoration: none; margin-left: 4px;">Try OTFlow →</a>
-  </div>
-
   <div class="page-header">
-    <h1>CPT Code Extraction for OT/PT</h1>
-    <p class="subheading">Paste your clinical note and get CPT codes with compliance-focused justifications. Built for SNF, home health, and outpatient therapists.</p>
+    <h1>CPT Code Documentation for OT/PT</h1>
+    <p class="subheading">Select the activities you performed during the session. CodeFlow generates insurance-compliant narratives and CPT codes ready to copy into your EMR.</p>
   </div>
 
   <div id="usageBar" class="usage-bar">
@@ -178,15 +182,15 @@
 
   <div class="card">
     <div class="card-header">
-      <div class="card-title">📋 Clinical Note</div>
-      <div class="card-hint">Paste your raw clinical note below</div>
+      <div class="card-title">📋 Session Activities</div>
+      <div style="font-size: 12px; color: var(--text-muted)"><span id="selectedCount">0</span> selected</div>
     </div>
     <div class="card-body">
-      <label class="notes-label">Your Clinical Note</label>
-      <textarea id="clinicalNote" placeholder="Pt received sup in bed with bed in semifowler pos. Pt performed bed mobility to EOB at MIN A for support in rolling to R and reaching with LUE for support. Pt instructed in hand positioning for pushing from sup>sit..."></textarea>
+      
+      <div class="activity-grid" id="activityGrid"></div>
 
-      <button class="btn-extract" id="extractBtn" onclick="extractCodes()">
-        <span id="btnText">Extract CPT Codes</span>
+      <button class="btn-generate" id="generateBtn" onclick="generateDocumentation()">
+        <span id="btnText">Generate Documentation</span>
       </button>
 
       <div class="error-box" id="errorBox"></div>
@@ -195,19 +199,19 @@
 
   <div class="card output-card" id="outputCard">
     <div class="card-header">
-      <div class="card-title">✨ CPT Codes Identified</div>
+      <div class="card-title">✨ CPT Codes & Documentation</div>
     </div>
     <div class="card-body">
       <div id="codeResults"></div>
       <div class="output-actions">
-        <button class="btn-action primary" id="copyBtn" onclick="copyCodes()">📋 Copy All Codes</button>
-        <button class="btn-action" onclick="newExtraction()">🔄 New Extraction</button>
+        <button class="btn-action primary" id="copyBtn" onclick="copyCodes()">📋 Copy All</button>
+        <button class="btn-action" onclick="newSession()">🔄 New Session</button>
       </div>
     </div>
   </div>
 
   <p class="disclaimer">
-    CodeFlow provides CPT code suggestions for billing compliance. All codes should be reviewed by a licensed therapist before submission. 
+    CodeFlow provides CPT code suggestions and insurance-compliant documentation. All codes should be reviewed by a licensed therapist before submission. 
     You are responsible for ensuring billing accuracy and compliance with payer requirements.
   </p>
 
@@ -230,6 +234,66 @@
 </div>
 
 <script>
+  const ACTIVITIES = {
+    "Upper Body Strengthening": [
+      "Shoulder flexion (overhead raise)",
+      "Chest press",
+      "Shoulder abduction",
+      "Elbow flexion (biceps curl)",
+      "Forearm pronation/supination",
+      "Triceps press (overhead or forward)",
+      "Overhead press",
+      "Trunk rotation",
+      "Diagonal patterns (PNF D1/D2 with dowel)",
+      "Internal/external rotation (elbows at side)",
+      "Wrist flexion/extension with dowel"
+    ],
+    "Core Strengthening": [
+      "Seated medicine ball trunk rotations",
+      "Russian twists",
+      "Medicine ball sit-ups",
+      "Medicine ball crunches",
+      "Overhead medicine ball sit-ups",
+      "Medicine ball V-sits",
+      "Seated or standing diagonal chops (woodchoppers)",
+      "Reverse chops (low to high)",
+      "Medicine ball slams",
+      "Seated medicine ball reaches (multi-directional)",
+      "Medicine ball toe touches",
+      "Dead bugs holding medicine ball",
+      "Bird dog with medicine ball",
+      "Plank with medicine ball (hands on ball)",
+      "Plank roll-outs (forearms on ball)",
+      "Wall throws (rotational or chest pass)",
+      "Standing trunk flexion/extension with ball",
+      "Medicine ball marches (seated or standing)",
+      "Bridge with medicine ball squeeze",
+      "Pass the ball (hand-to-hand or hand-to-feet)"
+    ],
+    "Hand Strengthening": [
+      "Therapy putty squeezes",
+      "Finger pinches (tip, lateral, three-jaw chuck)",
+      "Finger spreads with rubber band",
+      "Power grip squeezes (stress ball/hand gripper)",
+      "Finger isolation lifts (table lifts)",
+      "Thumb opposition to each fingertip",
+      "Key pinch strengthening",
+      "Tip-to-tip pinch with small objects",
+      "Putty finger extension",
+      "Rolling putty into a log",
+      "Clothespin pinching",
+      "Paper crumpling (one hand)",
+      "Towel wringing",
+      "Jar opening/closing practice",
+      "Coin translation (palm to fingers)",
+      "Pegboard placement/removal",
+      "Finger walking (up/down wall or table)",
+      "Rubber band finger extensions",
+      "Squeeze and hold (isometric grip)",
+      "Finger tapping (speed and coordination)"
+    ]
+  };
+
   let usage = parseInt(localStorage.getItem('codeflow_usage') || '0');
   const MAX_FREE = 5;
 
@@ -238,19 +302,9 @@
   const isPro = !!proToken;
 
   let currentCodes = [];
+  let selectedActivities = new Set();
 
   function init() {
-    // Check for note parameter from OTFlow
-    const urlParams = new URLSearchParams(window.location.search);
-    const prefilledNote = urlParams.get('note');
-    if (prefilledNote) {
-      document.getElementById('clinicalNote').value = decodeURIComponent(prefilledNote);
-      // Scroll to input
-      setTimeout(() => {
-        document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
-    }
-    
     if (isPro) {
       document.getElementById('statusBadge').textContent = `Pro · ${proEmail}`;
       document.getElementById('statusBadge').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
@@ -260,6 +314,8 @@
     } else {
       renderPips();
     }
+    
+    renderActivities();
   }
 
   function renderPips() {
@@ -267,26 +323,118 @@
     pips.forEach((p, i) => p.classList.toggle('used', i < usage));
   }
 
-  async function extractCodes() {
+  function renderActivities() {
+    const grid = document.getElementById('activityGrid');
+    grid.innerHTML = '';
+    
+    Object.entries(ACTIVITIES).forEach(([category, activities]) => {
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'category';
+      
+      const categoryId = category.replace(/\s+/g, '-').toLowerCase();
+      
+      categoryDiv.innerHTML = `
+        <div class="category-header" onclick="toggleCategory('${categoryId}')">
+          <input type="checkbox" class="category-checkbox" id="cat-${categoryId}" onclick="event.stopPropagation(); toggleCategorySelect('${categoryId}')">
+          <div class="category-title">${category}</div>
+          <div class="category-count" id="count-${categoryId}">0/${activities.length}</div>
+        </div>
+        <div class="activities" id="activities-${categoryId}">
+          ${activities.map((activity, idx) => `
+            <div class="activity-item">
+              <input type="checkbox" class="activity-checkbox" id="act-${categoryId}-${idx}" onchange="updateSelection('${categoryId}', ${idx})">
+              <label class="activity-label" for="act-${categoryId}-${idx}">${activity}</label>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      grid.appendChild(categoryDiv);
+    });
+  }
+
+  function toggleCategory(categoryId) {
+    const activities = document.getElementById(`activities-${categoryId}`);
+    activities.classList.toggle('show');
+  }
+
+  function toggleCategorySelect(categoryId) {
+    const checkbox = document.getElementById(`cat-${categoryId}`);
+    const category = Object.keys(ACTIVITIES).find(c => c.replace(/\s+/g, '-').toLowerCase() === categoryId);
+    const activities = ACTIVITIES[category];
+    
+    activities.forEach((activity, idx) => {
+      const actCheckbox = document.getElementById(`act-${categoryId}-${idx}`);
+      actCheckbox.checked = checkbox.checked;
+      const key = `${category}::${activity}`;
+      if (checkbox.checked) {
+        selectedActivities.add(key);
+      } else {
+        selectedActivities.delete(key);
+      }
+    });
+    
+    updateCounts();
+  }
+
+  function updateSelection(categoryId, idx) {
+    const category = Object.keys(ACTIVITIES).find(c => c.replace(/\s+/g, '-').toLowerCase() === categoryId);
+    const activity = ACTIVITIES[category][idx];
+    const key = `${category}::${activity}`;
+    const checkbox = document.getElementById(`act-${categoryId}-${idx}`);
+    
+    if (checkbox.checked) {
+      selectedActivities.add(key);
+    } else {
+      selectedActivities.delete(key);
+    }
+    
+    updateCounts();
+  }
+
+  function updateCounts() {
+    Object.entries(ACTIVITIES).forEach(([category, activities]) => {
+      const categoryId = category.replace(/\s+/g, '-').toLowerCase();
+      const selected = activities.filter(a => selectedActivities.has(`${category}::${a}`)).length;
+      document.getElementById(`count-${categoryId}`).textContent = `${selected}/${activities.length}`;
+      
+      const catCheckbox = document.getElementById(`cat-${categoryId}`);
+      catCheckbox.checked = selected === activities.length;
+      catCheckbox.indeterminate = selected > 0 && selected < activities.length;
+    });
+    
+    document.getElementById('selectedCount').textContent = selectedActivities.size;
+  }
+
+  async function generateDocumentation() {
     hideError();
     
     if (!isPro && usage >= MAX_FREE) {
-      showError(`You've used all ${MAX_FREE} free extractions. Upgrade to Pro for unlimited access.`);
+      showError(`You've used all ${MAX_FREE} free generations. Upgrade to Pro for unlimited access.`);
       return;
     }
 
-    const note = document.getElementById('clinicalNote').value;
-    if (!note.trim()) { showError('Please enter a clinical note.'); return; }
-    if (note.trim().length < 50) { showError('Clinical note is too short. Add more detail.'); return; }
+    if (selectedActivities.size === 0) {
+      showError('Please select at least one activity.');
+      return;
+    }
 
     setLoading(true);
 
-    const payload = { note };
+    // Build activity list by category
+    const activityList = {};
+    selectedActivities.forEach(key => {
+      const [category, activity] = key.split('::');
+      if (!activityList[category]) activityList[category] = [];
+      activityList[category].push(activity);
+    });
+
+    const payload = { activities: activityList };
     const headers = { 'Content-Type': 'application/json' };
     if (proToken) headers['Authorization'] = `Bearer ${proToken}`;
 
     try {
-      const res = await fetch('/api/extract-codes', { method: 'POST', headers, body: JSON.stringify(payload) });
+      const res = await fetch('/api/generate-from-activities', { method: 'POST', headers, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
       
@@ -322,7 +470,7 @@
   }
 
   function copyCodes() {
-    let text = 'CPT CODES IDENTIFIED:\n\n';
+    let text = 'CPT CODES & DOCUMENTATION:\n\n';
     currentCodes.forEach((code, i) => {
       text += `${i + 1}. ${code.code} — ${code.name}\n`;
       text += `   Confidence: ${code.confidence.toUpperCase()}\n`;
@@ -340,16 +488,18 @@
     });
   }
 
-  function newExtraction() {
-    document.getElementById('clinicalNote').value = '';
+  function newSession() {
+    selectedActivities.clear();
+    document.querySelectorAll('.activity-checkbox, .category-checkbox').forEach(cb => cb.checked = false);
+    updateCounts();
     document.getElementById('outputCard').classList.remove('show');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function setLoading(on) {
-    const btn = document.getElementById('extractBtn');
+    const btn = document.getElementById('generateBtn');
     btn.disabled = on;
-    btn.innerHTML = on ? '<div class="spinner"></div><span>Analyzing note...</span>' : '<span id="btnText">Extract CPT Codes</span>';
+    btn.innerHTML = on ? '<div class="spinner"></div><span>Generating documentation...</span>' : '<span id="btnText">Generate Documentation</span>';
   }
 
   function showError(msg) { const el = document.getElementById('errorBox'); el.textContent = '⚠ ' + msg; el.classList.add('show'); }
@@ -387,7 +537,6 @@
     const sessionId = urlParams.get('session_id');
     
     if (success === 'true' && sessionId) {
-      // Show loading state
       const statusBadge = document.getElementById('statusBadge');
       statusBadge.textContent = 'Verifying payment...';
       statusBadge.style.background = '#fbbf24';
@@ -402,12 +551,9 @@
         const data = await res.json();
         
         if (res.ok && data.token) {
-          // Store Pro token
           localStorage.setItem('codeflow_pro_token', data.token);
           localStorage.setItem('codeflow_pro_email', data.email);
           localStorage.removeItem('codeflow_usage');
-          
-          // Reload to show Pro status (removes query params)
           window.location.href = window.location.origin;
         } else {
           statusBadge.textContent = 'Verification failed';
