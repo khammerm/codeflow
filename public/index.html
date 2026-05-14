@@ -15,11 +15,14 @@
     --accent: #0066cc;
     --accent-light: #e8f1fb;
     --accent-dark: #0052a3;
+    --adl-accent: #0e7c5b;
+    --adl-light: #e6f4ef;
+    --adl-dark: #0a5c44;
     --text: #1a2332;
     --text-muted: #6b7d8f;
     --danger: #c0392b;
-    --warning: #ff9800;
-    --success: #4caf50;
+    --warning: #e07b00;
+    --success: #1a7a4e;
     --serif: 'Lora', Georgia, serif;
     --sans: 'DM Sans', system-ui, sans-serif;
     --radius: 14px;
@@ -32,11 +35,8 @@
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 62px;
-    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 62px; position: sticky; top: 0; z-index: 10;
   }
   .logo { font-family: var(--serif); font-size: 22px; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
   .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
@@ -48,9 +48,9 @@
 
   .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
 
-  .page-header { text-align: center; margin-bottom: 40px; }
-  .page-header h1 { font-family: var(--serif); font-size: 36px; color: var(--accent-dark); letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 16px; font-weight: 500; }
-  .page-header .subheading { color: var(--text); font-size: 17px; line-height: 1.6; max-width: 700px; margin: 0 auto 20px; font-weight: 400; }
+  .page-header { text-align: center; margin-bottom: 36px; }
+  .page-header h1 { font-family: var(--serif); font-size: 36px; color: var(--accent-dark); letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 14px; font-weight: 500; }
+  .page-header .subheading { color: var(--text); font-size: 16px; line-height: 1.65; max-width: 680px; margin: 0 auto; font-weight: 400; }
 
   .usage-bar { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
   .usage-left { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
@@ -58,27 +58,76 @@
   .pip { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
   .pip.used { background: var(--accent); }
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
-  .card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-title { font-family: var(--serif); font-size: 17px; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
-  .card-body { padding: 24px; }
+  /* Section labels */
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    margin: 28px 0 14px;
+  }
+  .section-label-text { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+  .section-label-text.adl { color: var(--adl-dark); }
+  .section-label-text.exercise { color: var(--accent-dark); }
+  .section-label-desc { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
 
-  .activity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-  
-  .category { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .category-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer; user-select: none; }
-  .category-checkbox { width: 20px; height: 20px; cursor: pointer; }
-  .category-title { font-family: var(--serif); font-size: 16px; color: var(--accent-dark); font-weight: 600; flex: 1; }
-  .category-count { font-size: 12px; color: var(--text-muted); }
-  
+  /* Card */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+  .card-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-header.adl { background: var(--adl-light); border-bottom-color: #b3ddd0; }
+  .card-title { font-family: var(--serif); font-size: 16px; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
+  .card-title.adl { color: var(--adl-dark); }
+  .card-body { padding: 20px 22px; }
+
+  /* Activity grids */
+  .activity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .adl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+  .category { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .category.adl-cat { border-left: 3px solid var(--adl-accent); }
+  .category.ex-cat { border-left: 3px solid var(--accent); }
+
+  .category-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; user-select: none; }
+  .category-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); flex-shrink: 0; }
+  .category-checkbox.adl { accent-color: var(--adl-accent); }
+  .category-title { font-family: var(--serif); font-size: 15px; color: var(--accent-dark); font-weight: 600; flex: 1; }
+  .category-title.adl { color: var(--adl-dark); }
+  .category-count { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .category-toggle { font-size: 12px; color: var(--text-muted); margin-left: 4px; transition: transform 0.2s; }
+  .category-toggle.open { transform: rotate(180deg); }
+
   .activities { display: none; }
   .activities.show { display: block; }
-  
-  .activity-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
-  .activity-checkbox { margin-top: 2px; cursor: pointer; }
-  .activity-label { font-size: 14px; color: var(--text); cursor: pointer; flex: 1; }
 
-  .btn-generate { width: 100%; margin-top: 18px; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: var(--serif); font-size: 18px; font-style: italic; cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,102,204,0.3); }
+  /* Exercise item */
+  .activity-item { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 1px solid transparent; }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-checkbox { margin-top: 3px; cursor: pointer; width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--accent); }
+
+  /* ADL item */
+  .adl-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; flex-wrap: nowrap; }
+  .adl-checkbox { cursor: pointer; width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--adl-accent); }
+  .adl-label { font-size: 13.5px; color: var(--text); cursor: pointer; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .adl-label:hover { color: var(--adl-dark); }
+
+  .assist-select {
+    display: none;
+    font-size: 11px; font-family: var(--sans); font-weight: 600;
+    padding: 3px 7px; border: 1.5px solid var(--adl-accent);
+    border-radius: 20px; background: var(--adl-light); color: var(--adl-dark);
+    cursor: pointer; outline: none; flex-shrink: 0;
+    transition: border-color 0.15s;
+    max-width: 70px;
+  }
+  .assist-select:hover { background: #d0eee6; }
+  .assist-select.visible { display: inline-block; }
+
+  .activity-label { font-size: 13.5px; color: var(--text); cursor: pointer; flex: 1; line-height: 1.4; }
+  .activity-label:hover { color: var(--accent-dark); }
+
+  /* Generate */
+  .generate-area { margin-top: 20px; }
+  .selected-summary { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 12px; }
+  .selected-summary strong { color: var(--accent-dark); }
+  .btn-generate { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: var(--serif); font-size: 18px; font-style: italic; cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,102,204,0.3); }
   .btn-generate:hover:not(:disabled) { background: var(--accent-dark); transform: translateY(-1px); }
   .btn-generate:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
   .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.75s linear infinite; }
@@ -91,7 +140,7 @@
   .output-card.show { display: block; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-  .code-card { background: var(--bg); border-left: 4px solid var(--accent); border-radius: 10px; padding: 20px; margin-bottom: 16px; position: relative; }
+  .code-card { background: var(--bg); border-left: 4px solid var(--accent); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
   .code-card.risk-medium { border-left-color: var(--warning); }
   .code-card.risk-high { border-left-color: var(--danger); }
 
@@ -102,11 +151,9 @@
   .confidence-medium { background: var(--warning); color: white; }
   .confidence-low { background: var(--danger); color: white; }
 
-  .code-section { margin: 10px 0; font-size: 14px; }
-  .code-section p { color: var(--text); line-height: 1.7; margin: 0; }
-
-  .risk-warning { background: #fff3cd; border: 1px solid var(--warning); padding: 12px 16px; border-radius: 8px; margin-top: 12px; font-size: 13px; color: #856404; line-height: 1.6; }
-  .risk-warning::before { content: '⚠️ '; }
+  .code-section p { font-size: 14px; color: var(--text); line-height: 1.75; }
+  .risk-warning { background: #fff3cd; border: 1px solid #ffc107; padding: 10px 14px; border-radius: 8px; margin-top: 12px; font-size: 13px; color: #7d5a00; line-height: 1.6; }
+  .risk-warning::before { content: '⚠️  '; }
 
   .output-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
   .btn-action { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2); color: var(--text); font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -116,6 +163,7 @@
 
   .disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; max-width: 700px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
 
+  /* Restore modal */
   .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; padding: 24px; }
   .modal-backdrop.show { display: flex; }
   .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; max-width: 400px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.15); }
@@ -137,12 +185,13 @@
   .modal-btn.secondary:hover { background: var(--bg); }
 
   @media (max-width: 640px) {
-    nav { padding: 0 20px; }
+    nav { padding: 0 16px; }
     .logo { font-size: 18px; }
-    .container { padding: 32px 16px 64px; }
-    .page-header h1 { font-size: 28px; }
-    .page-header .subheading { font-size: 15px; }
-    .activity-grid { grid-template-columns: 1fr; }
+    .container { padding: 28px 14px 64px; }
+    .page-header h1 { font-size: 26px; }
+    .activity-grid, .adl-grid { grid-template-columns: 1fr; }
+    .adl-label { font-size: 13px; }
+    .output-actions { flex-direction: column; }
   }
 </style>
 </head>
@@ -160,10 +209,10 @@
 </nav>
 
 <div class="container">
-  
+
   <div class="page-header">
     <h1>CPT Code Documentation for OT/PT</h1>
-    <p class="subheading">Select the activities you performed during the session. CodeFlow generates insurance-compliant narratives and CPT codes ready to copy into your EMR.</p>
+    <p class="subheading">Check off what you did in the session. CodeFlow generates insurance-compliant CPT narratives ready to copy into your EMR — no writing required.</p>
   </div>
 
   <div id="usageBar" class="usage-bar">
@@ -176,26 +225,41 @@
     <button onclick="openRestore()" style="font-size: 11px; background: transparent; border: none; color: var(--accent); cursor: pointer; text-decoration: underline; font-family: var(--sans); font-weight: 500;">Already a subscriber?</button>
   </div>
 
+  <!-- ADL SECTION -->
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">📋 Session Activities</div>
-      <div style="font-size: 12px; color: var(--text-muted)"><span id="selectedCount">0</span> selected</div>
+    <div class="card-header adl">
+      <div class="card-title adl">🧍 ADL Training <span style="font-family:var(--sans);font-size:12px;font-weight:400;color:var(--adl-dark);margin-left:4px;">— check each task &amp; select assist level</span></div>
+      <div style="font-size: 12px; color: var(--adl-dark)"><span id="adlCount">0</span> selected</div>
     </div>
     <div class="card-body">
-      
-      <div class="activity-grid" id="activityGrid"></div>
-
-      <button class="btn-generate" id="generateBtn" onclick="generateDocumentation()">
-        <span id="btnText">Generate Documentation</span>
-      </button>
-
-      <div class="error-box" id="errorBox"></div>
+      <div class="adl-grid" id="adlGrid"></div>
     </div>
   </div>
 
-  <div class="card output-card" id="outputCard">
+  <!-- EXERCISE SECTION -->
+  <div class="card">
     <div class="card-header">
-      <div class="card-title">✨ CPT Codes & Documentation</div>
+      <div class="card-title">💪 Therapeutic Interventions</div>
+      <div style="font-size: 12px; color: var(--text-muted)"><span id="exCount">0</span> selected</div>
+    </div>
+    <div class="card-body">
+      <div class="activity-grid" id="activityGrid"></div>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="generate-area">
+    <div class="selected-summary" id="selectedSummary"></div>
+    <button class="btn-generate" id="generateBtn" onclick="generateDocumentation()">
+      <span id="btnText">Generate Documentation</span>
+    </button>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="card output-card" id="outputCard" style="margin-top:20px;">
+    <div class="card-header">
+      <div class="card-title">✨ CPT Codes &amp; Documentation</div>
     </div>
     <div class="card-body">
       <div id="codeResults"></div>
@@ -206,13 +270,13 @@
     </div>
   </div>
 
-  <p class="disclaimer">
-    CodeFlow provides CPT code suggestions and insurance-compliant documentation. All codes should be reviewed by a licensed therapist before submission. 
-    You are responsible for ensuring billing accuracy and compliance with payer requirements.
+  <p class="disclaimer" style="margin-top:24px;">
+    CodeFlow provides CPT code suggestions and insurance-compliant documentation. All codes must be reviewed by a licensed therapist before submission. You are responsible for billing accuracy and payer compliance.
   </p>
 
 </div>
 
+<!-- RESTORE MODAL -->
 <div class="modal-backdrop" id="restoreModal">
   <div class="modal">
     <h2>Restore <em>Pro</em> Access</h2>
@@ -230,378 +294,532 @@
 </div>
 
 <script>
-  const ACTIVITIES = {
-    "ADL Training (Self-Care)": [
-      "Upper body dressing (shirt, bra, jacket)",
-      "Lower body dressing (pants, socks, shoes)",
-      "Bathing/showering techniques",
-      "Grooming (hair care, teeth brushing, shaving)",
-      "Toileting skills and hygiene",
-      "Self-feeding skills and utensil use",
-      "Meal preparation tasks",
-      "Medication management",
-      "Donning/doffing adaptive equipment"
-    ],
-    "Functional Mobility": [
-      "Bed mobility (rolling, scooting, positioning)",
-      "Supine to sitting transfers",
-      "Sit-to-stand practice",
-      "Chair to wheelchair transfers",
-      "Toilet transfers",
-      "Bed to chair transfers",
-      "Functional reaching (overhead, floor-level)",
-      "Functional ambulation with assistive device",
-      "Stair negotiation",
-      "Dynamic balance during functional tasks"
-    ],
-    "Balance & Coordination": [
-      "Static standing balance",
-      "Single-leg stance",
-      "Tandem stance",
-      "Weight shift activities",
-      "Balance board exercises",
-      "Dual-task balance activities",
-      "Dynamic balance during reaching",
-      "Gait training for coordination",
-      "Vestibular exercises",
-      "Fall recovery strategies"
-    ],
-    "Upper Body Strengthening": [
-      "Shoulder flexion (overhead raise)",
-      "Chest press",
-      "Shoulder abduction",
-      "Elbow flexion (biceps curl)",
-      "Forearm pronation/supination",
-      "Triceps press (overhead or forward)",
-      "Overhead press",
-      "Trunk rotation",
-      "Diagonal patterns (PNF D1/D2 with dowel)",
-      "Internal/external rotation (elbows at side)",
-      "Wrist flexion/extension with dowel"
-    ],
-    "Core Strengthening": [
-      "Seated medicine ball trunk rotations",
-      "Russian twists",
-      "Medicine ball sit-ups",
-      "Medicine ball crunches",
-      "Overhead medicine ball sit-ups",
-      "Medicine ball V-sits",
-      "Seated or standing diagonal chops (woodchoppers)",
-      "Reverse chops (low to high)",
-      "Medicine ball slams",
-      "Seated medicine ball reaches (multi-directional)",
-      "Medicine ball toe touches",
-      "Dead bugs holding medicine ball",
-      "Bird dog with medicine ball",
-      "Plank with medicine ball (hands on ball)",
-      "Plank roll-outs (forearms on ball)",
-      "Wall throws (rotational or chest pass)",
-      "Standing trunk flexion/extension with ball",
-      "Medicine ball marches (seated or standing)",
-      "Bridge with medicine ball squeeze",
-      "Pass the ball (hand-to-hand or hand-to-feet)"
-    ],
-    "Hand Strengthening": [
-      "Therapy putty squeezes",
-      "Finger pinches (tip, lateral, three-jaw chuck)",
-      "Finger spreads with rubber band",
-      "Power grip squeezes (stress ball/hand gripper)",
-      "Finger isolation lifts (table lifts)",
-      "Thumb opposition to each fingertip",
-      "Key pinch strengthening",
-      "Tip-to-tip pinch with small objects",
-      "Putty finger extension",
-      "Rolling putty into a log",
-      "Clothespin pinching",
-      "Paper crumpling (one hand)",
-      "Towel wringing",
-      "Jar opening/closing practice",
-      "Coin translation (palm to fingers)",
-      "Pegboard placement/removal",
-      "Finger walking (up/down wall or table)",
-      "Rubber band finger extensions",
-      "Squeeze and hold (isometric grip)",
-      "Finger tapping (speed and coordination)"
-    ]
-  };
+// ─── DATA ────────────────────────────────────────────────────────────────────
 
-  let usage = parseInt(localStorage.getItem('codeflow_usage') || '0');
-  const MAX_FREE = 5;
+const ASSIST_LEVELS = ['I','MI','S/U','SUP','SBA','CGA','MIN','MOD','MAX','TD+','TD'];
 
-  const proToken = localStorage.getItem('codeflow_pro_token');
-  const proEmail = localStorage.getItem('codeflow_pro_email');
-  const isPro = !!proToken;
+// ADL categories: granular sub-items, each gets an assist level when checked
+const ADL_CATEGORIES = {
+  'UB Dressing': [
+    'Shirt (donning)','Shirt (doffing)',
+    'Bra (donning)','Bra (doffing)',
+    'Jacket / cardigan (donning)','Jacket / cardigan (doffing)',
+    'Button management','Zipper management',
+    'Adaptive technique training'
+  ],
+  'LB Dressing': [
+    'Underwear (donning)','Underwear (doffing)',
+    'Pants (donning)','Pants (doffing)',
+    'Socks (donning)','Socks (doffing)',
+    'Shoes (donning)','Shoes (doffing)',
+    'Adaptive equipment use (reacher, sock aid, long-handled shoehorn)'
+  ],
+  'Grooming / Hygiene': [
+    'Face washing','Oral care (teeth brushing)',
+    'Hair combing / brushing','Shaving',
+    'Nail care','Makeup application'
+  ],
+  'Bathing / Showering': [
+    'UB bathing','LB bathing',
+    'Perineal care','Setup / equipment management',
+    'Shower entry','Shower exit','Tub transfer'
+  ],
+  'Toileting': [
+    'Clothing management (on)','Clothing management (off)',
+    'Transfer to toilet','Transfer from toilet',
+    'Perineal hygiene','Call light / toilet paper management'
+  ],
+  'Feeding / Eating': [
+    'Meal setup','Eating with utensils (fork / spoon)',
+    'Drinking from cup / glass','Cutting food',
+    'Opening containers / packages','Straw use'
+  ],
+  'Functional Transfers': [
+    'Supine to sitting','Sitting to supine',
+    'Sit to stand (from bed)','Sit to stand (from chair)',
+    'Bed to wheelchair','Wheelchair to bed',
+    'Bed mobility (rolling / scooting)'
+  ]
+};
 
-  let currentCodes = [];
-  let selectedActivities = new Set();
+// Exercise categories: checkboxes only, no assist levels
+const EXERCISE_CATEGORIES = {
+  'Functional Mobility': [
+    'Functional ambulation with assistive device',
+    'Sit-to-stand practice (therapeutic context)',
+    'Stair negotiation',
+    'Functional reaching (overhead)',
+    'Functional reaching (floor-level)',
+    'Dynamic balance during functional tasks'
+  ],
+  'Balance & Coordination': [
+    'Static standing balance',
+    'Single-leg stance',
+    'Tandem stance',
+    'Weight shift activities',
+    'Balance board exercises',
+    'Dual-task balance activities',
+    'Dynamic balance during reaching',
+    'Vestibular exercises',
+    'Fall recovery strategies'
+  ],
+  'Upper Body Strengthening': [
+    'Shoulder flexion (overhead raise)',
+    'Chest press',
+    'Shoulder abduction',
+    'Elbow flexion (biceps curl)',
+    'Forearm pronation / supination',
+    'Triceps press (overhead or forward)',
+    'Overhead press',
+    'Trunk rotation',
+    'Diagonal patterns (PNF D1/D2 with dowel)',
+    'Internal / external rotation (elbows at side)',
+    'Wrist flexion / extension with dowel'
+  ],
+  'Core Strengthening': [
+    'Seated medicine ball trunk rotations',
+    'Russian twists',
+    'Medicine ball sit-ups',
+    'Medicine ball crunches',
+    'Overhead medicine ball sit-ups',
+    'Medicine ball V-sits',
+    'Diagonal chops / woodchoppers (seated or standing)',
+    'Reverse chops (low to high)',
+    'Medicine ball slams',
+    'Seated medicine ball reaches (multi-directional)',
+    'Medicine ball toe touches',
+    'Dead bugs holding medicine ball',
+    'Bird dog with medicine ball',
+    'Plank with medicine ball (hands on ball)',
+    'Plank roll-outs (forearms on ball)',
+    'Wall throws (rotational or chest pass)',
+    'Standing trunk flexion / extension with ball',
+    'Medicine ball marches (seated or standing)',
+    'Bridge with medicine ball squeeze',
+    'Pass the ball (hand-to-hand or hand-to-feet)'
+  ],
+  'Hand Strengthening': [
+    'Therapy putty squeezes',
+    'Finger pinches (tip, lateral, three-jaw chuck)',
+    'Finger spreads with rubber band',
+    'Power grip squeezes (stress ball / hand gripper)',
+    'Finger isolation lifts (table lifts)',
+    'Thumb opposition to each fingertip',
+    'Key pinch strengthening',
+    'Tip-to-tip pinch with small objects',
+    'Putty finger extension',
+    'Rolling putty into a log (palmar strengthening)',
+    'Clothespin pinching (vary resistance)',
+    'Paper crumpling (one hand)',
+    'Towel wringing',
+    'Jar opening / closing practice',
+    'Coin translation (palm to fingers)',
+    'Pegboard placement / removal',
+    'Finger walking (up / down wall or table)',
+    'Rubber band finger extensions',
+    'Squeeze and hold (isometric grip)',
+    'Finger tapping (speed + coordination)'
+  ]
+};
 
-  function init() {
-    if (isPro) {
-      document.getElementById('statusBadge').textContent = `Pro · ${proEmail}`;
-      document.getElementById('statusBadge').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-      document.getElementById('statusBadge').style.color = 'white';
-      document.getElementById('upgradeBtn').style.display = 'none';
-      document.getElementById('usageBar').style.display = 'none';
-    } else {
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+// adlSelected: Map of `${category}::${task}` → assistLevel string (or '')
+const adlSelected   = new Map();
+// exSelected: Set of `${category}::${task}`
+const exSelected    = new Set();
+
+let currentCodes = [];
+
+const MAX_FREE = 5;
+const proToken  = localStorage.getItem('codeflow_pro_token');
+const proEmail  = localStorage.getItem('codeflow_pro_email');
+const isPro     = !!proToken;
+
+// Usage is validated server-side; localStorage is just for UI display
+let usageDisplay = parseInt(localStorage.getItem('codeflow_usage') || '0');
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+function init() {
+  if (isPro) {
+    document.getElementById('statusBadge').textContent = `Pro · ${proEmail}`;
+    document.getElementById('statusBadge').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    document.getElementById('statusBadge').style.color = 'white';
+    document.getElementById('upgradeBtn').style.display = 'none';
+    document.getElementById('usageBar').style.display = 'none';
+  } else {
+    renderPips();
+  }
+  renderAdlCategories();
+  renderExerciseCategories();
+  handleStripeSuccess();
+}
+
+function renderPips() {
+  document.querySelectorAll('.pip').forEach((p, i) => p.classList.toggle('used', i < usageDisplay));
+}
+
+// ─── RENDER ADL ──────────────────────────────────────────────────────────────
+
+function makeAssistOptions() {
+  return ASSIST_LEVELS.map(l => `<option value="${l}">${l}</option>`).join('');
+}
+
+function renderAdlCategories() {
+  const grid = document.getElementById('adlGrid');
+  grid.innerHTML = '';
+
+  Object.entries(ADL_CATEGORIES).forEach(([category, tasks]) => {
+    const catId = 'adl-' + category.replace(/[\s\/]+/g, '-').toLowerCase();
+    const div = document.createElement('div');
+    div.className = 'category adl-cat';
+
+    div.innerHTML = `
+      <div class="category-header" onclick="toggleCat('${catId}')">
+        <input type="checkbox" class="category-checkbox adl" id="catcb-${catId}"
+          onclick="event.stopPropagation(); toggleAdlCategorySelect('${catId}','${category}')">
+        <div class="category-title adl">${category}</div>
+        <div class="category-count" id="cnt-${catId}">0 / ${tasks.length}</div>
+        <span class="category-toggle" id="tog-${catId}">▾</span>
+      </div>
+      <div class="activities" id="act-${catId}">
+        ${tasks.map((task, idx) => {
+          const itemId = `${catId}-${idx}`;
+          return `
+            <div class="adl-item" id="row-${itemId}">
+              <input type="checkbox" class="adl-checkbox" id="cb-${itemId}"
+                onchange="handleAdlChange(this,'${category}','${escQ(task)}','${catId}')">
+              <label class="adl-label" for="cb-${itemId}">${task}</label>
+              <select class="assist-select" id="sel-${itemId}"
+                onchange="updateAdlLevel('${category}','${escQ(task)}',this.value)">
+                <option value="">─</option>
+                ${makeAssistOptions()}
+              </select>
+            </div>`;
+        }).join('')}
+      </div>`;
+
+    grid.appendChild(div);
+  });
+}
+
+function escQ(s) { return s.replace(/'/g, "\\'"); }
+
+function handleAdlChange(cb, category, task, catId) {
+  const key = `${category}::${task}`;
+  const idx = [...document.getElementById(`act-${catId}`).querySelectorAll('.adl-checkbox')]
+    .indexOf(cb);
+  const sel = document.getElementById(`sel-${catId}-${idx}`);
+
+  if (cb.checked) {
+    adlSelected.set(key, sel ? sel.value : '');
+    if (sel) sel.classList.add('visible');
+  } else {
+    adlSelected.delete(key);
+    if (sel) { sel.classList.remove('visible'); sel.value = ''; }
+  }
+  refreshAdlCatCheckbox(category, catId);
+  updateSummary();
+}
+
+function updateAdlLevel(category, task, level) {
+  const key = `${category}::${task}`;
+  if (adlSelected.has(key)) adlSelected.set(key, level);
+}
+
+function toggleAdlCategorySelect(catId, category) {
+  const cb = document.getElementById(`catcb-${catId}`);
+  const tasks = ADL_CATEGORIES[category];
+  const actDiv = document.getElementById(`act-${catId}`);
+  if (!actDiv.classList.contains('show')) actDiv.classList.add('show');
+
+  tasks.forEach((task, idx) => {
+    const itemCb = document.getElementById(`cb-${catId}-${idx}`);
+    const sel    = document.getElementById(`sel-${catId}-${idx}`);
+    const key    = `${category}::${task}`;
+    if (itemCb) {
+      itemCb.checked = cb.checked;
+      if (cb.checked) {
+        adlSelected.set(key, sel ? sel.value : '');
+        if (sel) sel.classList.add('visible');
+      } else {
+        adlSelected.delete(key);
+        if (sel) { sel.classList.remove('visible'); sel.value = ''; }
+      }
+    }
+  });
+  updateSummary();
+}
+
+function refreshAdlCatCheckbox(category, catId) {
+  const tasks = ADL_CATEGORIES[category];
+  const selected = tasks.filter(t => adlSelected.has(`${category}::${t}`)).length;
+  const cb = document.getElementById(`catcb-${catId}`);
+  if (cb) {
+    cb.checked = selected === tasks.length;
+    cb.indeterminate = selected > 0 && selected < tasks.length;
+  }
+  const cnt = document.getElementById(`cnt-${catId}`);
+  if (cnt) cnt.textContent = `${selected} / ${tasks.length}`;
+  document.getElementById('adlCount').textContent = adlSelected.size;
+}
+
+// ─── RENDER EXERCISES ────────────────────────────────────────────────────────
+
+function renderExerciseCategories() {
+  const grid = document.getElementById('activityGrid');
+  grid.innerHTML = '';
+
+  Object.entries(EXERCISE_CATEGORIES).forEach(([category, activities]) => {
+    const catId = 'ex-' + category.replace(/[\s&]+/g, '-').toLowerCase();
+    const div = document.createElement('div');
+    div.className = 'category ex-cat';
+
+    div.innerHTML = `
+      <div class="category-header" onclick="toggleCat('${catId}')">
+        <input type="checkbox" class="category-checkbox" id="catcb-${catId}"
+          onclick="event.stopPropagation(); toggleExCategorySelect('${catId}','${category}')">
+        <div class="category-title">${category}</div>
+        <div class="category-count" id="cnt-${catId}">0 / ${activities.length}</div>
+        <span class="category-toggle" id="tog-${catId}">▾</span>
+      </div>
+      <div class="activities" id="act-${catId}">
+        ${activities.map((act, idx) => `
+          <div class="activity-item">
+            <input type="checkbox" class="activity-checkbox" id="cb-${catId}-${idx}"
+              onchange="handleExChange(this,'${category}','${act.replace(/'/g,"\\'")}','${catId}')">
+            <label class="activity-label" for="cb-${catId}-${idx}">${act}</label>
+          </div>`).join('')}
+      </div>`;
+
+    grid.appendChild(div);
+  });
+}
+
+function handleExChange(cb, category, activity, catId) {
+  const key = `${category}::${activity}`;
+  cb.checked ? exSelected.add(key) : exSelected.delete(key);
+  refreshExCatCheckbox(category, catId);
+  updateSummary();
+}
+
+function toggleExCategorySelect(catId, category) {
+  const cb = document.getElementById(`catcb-${catId}`);
+  const activities = EXERCISE_CATEGORIES[category];
+  const actDiv = document.getElementById(`act-${catId}`);
+  if (!actDiv.classList.contains('show')) actDiv.classList.add('show');
+
+  activities.forEach((act, idx) => {
+    const itemCb = document.getElementById(`cb-${catId}-${idx}`);
+    const key = `${category}::${act}`;
+    if (itemCb) {
+      itemCb.checked = cb.checked;
+      cb.checked ? exSelected.add(key) : exSelected.delete(key);
+    }
+  });
+  refreshExCatCheckbox(category, catId);
+  updateSummary();
+}
+
+function refreshExCatCheckbox(category, catId) {
+  const activities = EXERCISE_CATEGORIES[category];
+  const selected = activities.filter(a => exSelected.has(`${category}::${a}`)).length;
+  const cb = document.getElementById(`catcb-${catId}`);
+  if (cb) { cb.checked = selected === activities.length; cb.indeterminate = selected > 0 && selected < activities.length; }
+  const cnt = document.getElementById(`cnt-${catId}`);
+  if (cnt) cnt.textContent = `${selected} / ${activities.length}`;
+  document.getElementById('exCount').textContent = exSelected.size;
+}
+
+function toggleCat(catId) {
+  const actDiv = document.getElementById(`act-${catId}`);
+  const tog = document.getElementById(`tog-${catId}`);
+  actDiv.classList.toggle('show');
+  if (tog) tog.classList.toggle('open', actDiv.classList.contains('show'));
+}
+
+function updateSummary() {
+  const total = adlSelected.size + exSelected.size;
+  const el = document.getElementById('selectedSummary');
+  el.innerHTML = total > 0
+    ? `<strong>${total} item${total !== 1 ? 's' : ''}</strong> selected (${adlSelected.size} ADL, ${exSelected.size} exercise)`
+    : '';
+}
+
+// ─── GENERATE ────────────────────────────────────────────────────────────────
+
+async function generateDocumentation() {
+  hideError();
+
+  if (!isPro && usageDisplay >= MAX_FREE) {
+    showError(`You've used all ${MAX_FREE} free generations. Upgrade to Pro for unlimited access.`);
+    return;
+  }
+  if (adlSelected.size + exSelected.size === 0) {
+    showError('Please select at least one activity.');
+    return;
+  }
+
+  setLoading(true);
+
+  // Build activity payload
+  // ADL items formatted as "Task (LEVEL assist)" so AI includes specific levels in narrative
+  const activityList = {};
+
+  adlSelected.forEach((level, key) => {
+    const [category, task] = key.split('::');
+    const label = `ADL Training — ${category}`;
+    if (!activityList[label]) activityList[label] = [];
+    activityList[label].push(level ? `${task} (${level})` : task);
+  });
+
+  exSelected.forEach(key => {
+    const [category, activity] = key.split('::');
+    if (!activityList[category]) activityList[category] = [];
+    activityList[category].push(activity);
+  });
+
+  const headers = { 'Content-Type': 'application/json' };
+  if (proToken) headers['Authorization'] = `Bearer ${proToken}`;
+
+  try {
+    const res = await fetch('/api/generate-from-activities', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ activities: activityList })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+
+    currentCodes = data.codes;
+    renderCodes(data.codes);
+
+    if (!isPro) {
+      usageDisplay++;
+      localStorage.setItem('codeflow_usage', usageDisplay);
       renderPips();
     }
-    
-    renderActivities();
+
+    document.getElementById('outputCard').classList.add('show');
+    document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    setLoading(false);
   }
+}
 
-  function renderPips() {
-    const pips = document.querySelectorAll('.pip');
-    pips.forEach((p, i) => p.classList.toggle('used', i < usage));
-  }
+// ─── RENDER OUTPUT ───────────────────────────────────────────────────────────
 
-  function renderActivities() {
-    const grid = document.getElementById('activityGrid');
-    grid.innerHTML = '';
-    
-    Object.entries(ACTIVITIES).forEach(([category, activities]) => {
-      const categoryDiv = document.createElement('div');
-      categoryDiv.className = 'category';
-      
-      const categoryId = category.replace(/\s+/g, '-').toLowerCase();
-      
-      categoryDiv.innerHTML = `
-        <div class="category-header" onclick="toggleCategory('${categoryId}')">
-          <input type="checkbox" class="category-checkbox" id="cat-${categoryId}" onclick="event.stopPropagation(); toggleCategorySelect('${categoryId}')">
-          <div class="category-title">${category}</div>
-          <div class="category-count" id="count-${categoryId}">0/${activities.length}</div>
-        </div>
-        <div class="activities" id="activities-${categoryId}">
-          ${activities.map((activity, idx) => `
-            <div class="activity-item">
-              <input type="checkbox" class="activity-checkbox" id="act-${categoryId}-${idx}" onchange="updateSelection('${categoryId}', ${idx})">
-              <label class="activity-label" for="act-${categoryId}-${idx}">${activity}</label>
-            </div>
-          `).join('')}
-        </div>
-      `;
-      
-      grid.appendChild(categoryDiv);
-    });
-  }
-
-  function toggleCategory(categoryId) {
-    const activities = document.getElementById(`activities-${categoryId}`);
-    activities.classList.toggle('show');
-  }
-
-  function toggleCategorySelect(categoryId) {
-    const checkbox = document.getElementById(`cat-${categoryId}`);
-    const category = Object.keys(ACTIVITIES).find(c => c.replace(/\s+/g, '-').toLowerCase() === categoryId);
-    const activities = ACTIVITIES[category];
-    
-    activities.forEach((activity, idx) => {
-      const actCheckbox = document.getElementById(`act-${categoryId}-${idx}`);
-      actCheckbox.checked = checkbox.checked;
-      const key = `${category}::${activity}`;
-      if (checkbox.checked) {
-        selectedActivities.add(key);
-      } else {
-        selectedActivities.delete(key);
-      }
-    });
-    
-    updateCounts();
-  }
-
-  function updateSelection(categoryId, idx) {
-    const category = Object.keys(ACTIVITIES).find(c => c.replace(/\s+/g, '-').toLowerCase() === categoryId);
-    const activity = ACTIVITIES[category][idx];
-    const key = `${category}::${activity}`;
-    const checkbox = document.getElementById(`act-${categoryId}-${idx}`);
-    
-    if (checkbox.checked) {
-      selectedActivities.add(key);
-    } else {
-      selectedActivities.delete(key);
-    }
-    
-    updateCounts();
-  }
-
-  function updateCounts() {
-    Object.entries(ACTIVITIES).forEach(([category, activities]) => {
-      const categoryId = category.replace(/\s+/g, '-').toLowerCase();
-      const selected = activities.filter(a => selectedActivities.has(`${category}::${a}`)).length;
-      document.getElementById(`count-${categoryId}`).textContent = `${selected}/${activities.length}`;
-      
-      const catCheckbox = document.getElementById(`cat-${categoryId}`);
-      catCheckbox.checked = selected === activities.length;
-      catCheckbox.indeterminate = selected > 0 && selected < activities.length;
-    });
-    
-    document.getElementById('selectedCount').textContent = selectedActivities.size;
-  }
-
-  async function generateDocumentation() {
-    hideError();
-    
-    if (!isPro && usage >= MAX_FREE) {
-      showError(`You've used all ${MAX_FREE} free generations. Upgrade to Pro for unlimited access.`);
-      return;
-    }
-
-    if (selectedActivities.size === 0) {
-      showError('Please select at least one activity.');
-      return;
-    }
-
-    setLoading(true);
-
-    // Build activity list by category
-    const activityList = {};
-    selectedActivities.forEach(key => {
-      const [category, activity] = key.split('::');
-      if (!activityList[category]) activityList[category] = [];
-      activityList[category].push(activity);
-    });
-
-    const payload = { activities: activityList };
-    const headers = { 'Content-Type': 'application/json' };
-    if (proToken) headers['Authorization'] = `Bearer ${proToken}`;
-
-    try {
-      const res = await fetch('/api/generate-from-activities', { method: 'POST', headers, body: JSON.stringify(payload) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
-      
-      currentCodes = data.codes;
-      renderCodes(data.codes);
-      
-      if (!isPro) { usage++; localStorage.setItem('codeflow_usage', usage); renderPips(); }
-      
-      document.getElementById('outputCard').classList.add('show');
-      document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      
-    } catch (err) {
-      showError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function renderCodes(codes) {
-    const container = document.getElementById('codeResults');
-    container.innerHTML = codes.map(code => `
-      <div class="code-card risk-${code.risk}">
-        <div class="code-header">
-          <div class="code-title">${code.code} — ${code.name}</div>
-          <div class="confidence-badge confidence-${code.confidence}">${code.confidence} confidence</div>
-        </div>
-        <div class="code-section">
-          <p>${code.narrative}</p>
-        </div>
-        ${code.warning ? `<div class="risk-warning">${code.warning}</div>` : ''}
+function renderCodes(codes) {
+  document.getElementById('codeResults').innerHTML = codes.map(c => `
+    <div class="code-card risk-${c.risk}">
+      <div class="code-header">
+        <div class="code-title">${c.code} — ${c.name}</div>
+        <div class="confidence-badge confidence-${c.confidence}">${c.confidence}</div>
       </div>
-    `).join('');
-  }
+      <div class="code-section"><p>${c.narrative}</p></div>
+      ${c.warning ? `<div class="risk-warning">${c.warning}</div>` : ''}
+    </div>`).join('');
+}
 
-  function copyCodes() {
-    let text = 'CPT CODES & DOCUMENTATION:\n\n';
-    currentCodes.forEach((code, i) => {
-      text += `${i + 1}. ${code.code} — ${code.name}\n`;
-      text += `   Confidence: ${code.confidence.toUpperCase()}\n`;
-      text += `   ${code.narrative}\n`;
-      if (code.warning) text += `   ⚠️ Warning: ${code.warning}\n`;
-      text += '\n';
+function copyCodes() {
+  let text = 'CPT CODES & DOCUMENTATION\n\n';
+  currentCodes.forEach((c, i) => {
+    text += `${i + 1}. ${c.code} — ${c.name}\n`;
+    text += `   ${c.narrative}\n`;
+    if (c.warning) text += `   ⚠️  ${c.warning}\n`;
+    text += '\n';
+  });
+  text += '——\nGenerated with CodeFlow. Review before billing.';
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy All', 2500);
+  });
+}
+
+function newSession() {
+  adlSelected.clear();
+  exSelected.clear();
+  document.querySelectorAll('.activity-checkbox,.adl-checkbox,.category-checkbox').forEach(cb => {
+    cb.checked = false; cb.indeterminate = false;
+  });
+  document.querySelectorAll('.assist-select').forEach(s => {
+    s.classList.remove('visible'); s.value = '';
+  });
+  document.querySelectorAll('.activities').forEach(a => a.classList.remove('show'));
+  document.querySelectorAll('.category-toggle').forEach(t => t.classList.remove('open'));
+  document.getElementById('adlCount').textContent = '0';
+  document.getElementById('exCount').textContent = '0';
+  document.getElementById('outputCard').classList.remove('show');
+  updateSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+
+function setLoading(on) {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = on;
+  btn.innerHTML = on
+    ? '<div class="spinner"></div><span>Generating documentation...</span>'
+    : '<span id="btnText">Generate Documentation</span>';
+}
+
+function showError(msg) { const el = document.getElementById('errorBox'); el.textContent = '⚠ ' + msg; el.classList.add('show'); }
+function hideError()    { document.getElementById('errorBox').classList.remove('show'); }
+
+function openRestore()  { document.getElementById('restoreModal').classList.add('show'); setTimeout(() => document.getElementById('restoreEmail').focus(), 100); }
+function closeRestore() { document.getElementById('restoreModal').classList.remove('show'); document.getElementById('restoreEmail').value = ''; document.getElementById('restoreMsg').textContent = ''; }
+
+async function restoreAccess() {
+  const email = document.getElementById('restoreEmail').value.trim();
+  if (!email) { showRestoreMsg('Please enter your email.', 'error'); return; }
+  const btn = document.getElementById('restoreBtn');
+  btn.disabled = true; btn.textContent = 'Checking...';
+  try {
+    const res = await fetch('/api/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+    localStorage.setItem('codeflow_pro_token', data.token);
+    localStorage.setItem('codeflow_pro_email', data.email);
+    localStorage.removeItem('codeflow_usage');
+    showRestoreMsg('Pro access restored! Reloading...', 'success');
+    setTimeout(() => location.reload(), 1200);
+  } catch (err) {
+    showRestoreMsg(err.message, 'error');
+    btn.disabled = false; btn.textContent = 'Restore access';
+  }
+}
+
+function showRestoreMsg(msg, type) { const el = document.getElementById('restoreMsg'); el.textContent = msg; el.className = 'restore-msg' + (type ? ' ' + type : ''); }
+
+async function handleStripeSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('success') !== 'true' || !params.get('session_id')) return;
+  const badge = document.getElementById('statusBadge');
+  badge.textContent = 'Verifying payment...'; badge.style.background = '#fbbf24';
+  try {
+    const res = await fetch('/api/verify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: params.get('session_id') })
     });
-    text += '——\nGenerated with CodeFlow. Review before billing.';
-    
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('copyBtn');
-      const orig = btn.textContent;
-      btn.textContent = '✓ Copied!';
-      setTimeout(() => btn.textContent = orig, 2500);
-    });
-  }
-
-  function newSession() {
-    selectedActivities.clear();
-    document.querySelectorAll('.activity-checkbox, .category-checkbox').forEach(cb => cb.checked = false);
-    updateCounts();
-    document.getElementById('outputCard').classList.remove('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function setLoading(on) {
-    const btn = document.getElementById('generateBtn');
-    btn.disabled = on;
-    btn.innerHTML = on ? '<div class="spinner"></div><span>Generating documentation...</span>' : '<span id="btnText">Generate Documentation</span>';
-  }
-
-  function showError(msg) { const el = document.getElementById('errorBox'); el.textContent = '⚠ ' + msg; el.classList.add('show'); }
-  function hideError() { document.getElementById('errorBox').classList.remove('show'); }
-
-  function openRestore() { document.getElementById('restoreModal').classList.add('show'); setTimeout(() => document.getElementById('restoreEmail').focus(), 100); }
-  function closeRestore() { document.getElementById('restoreModal').classList.remove('show'); document.getElementById('restoreEmail').value = ''; document.getElementById('restoreMsg').textContent = ''; }
-
-  async function restoreAccess() {
-    const email = document.getElementById('restoreEmail').value.trim();
-    if (!email) { showRestoreMsg('Please enter your email.', 'error'); return; }
-    const btn = document.getElementById('restoreBtn');
-    btn.disabled = true; btn.textContent = 'Checking...';
-    try {
-      const res = await fetch('/api/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+    const data = await res.json();
+    if (res.ok && data.token) {
       localStorage.setItem('codeflow_pro_token', data.token);
       localStorage.setItem('codeflow_pro_email', data.email);
       localStorage.removeItem('codeflow_usage');
-      showRestoreMsg('Pro access restored! Reloading...', 'success');
-      setTimeout(() => location.reload(), 1200);
-    } catch (err) {
-      showRestoreMsg(err.message, 'error');
-      btn.disabled = false; btn.textContent = 'Restore access';
+      window.location.href = window.location.origin;
+    } else {
+      badge.textContent = 'Verification failed'; badge.style.background = '#ef4444';
     }
-  }
+  } catch { badge.textContent = 'Verification failed'; badge.style.background = '#ef4444'; }
+}
 
-  function showRestoreMsg(msg, type) { const el = document.getElementById('restoreMsg'); el.textContent = msg; el.className = 'restore-msg' + (type ? ' ' + type : ''); }
-
-  // Handle Stripe payment success redirect
-  async function handleStripeSuccess() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const success = urlParams.get('success');
-    const sessionId = urlParams.get('session_id');
-    
-    if (success === 'true' && sessionId) {
-      const statusBadge = document.getElementById('statusBadge');
-      statusBadge.textContent = 'Verifying payment...';
-      statusBadge.style.background = '#fbbf24';
-      
-      try {
-        const res = await fetch('/api/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId })
-        });
-        
-        const data = await res.json();
-        
-        if (res.ok && data.token) {
-          localStorage.setItem('codeflow_pro_token', data.token);
-          localStorage.setItem('codeflow_pro_email', data.email);
-          localStorage.removeItem('codeflow_usage');
-          window.location.href = window.location.origin;
-        } else {
-          statusBadge.textContent = 'Verification failed';
-          statusBadge.style.background = '#ef4444';
-          alert('Payment verification failed. Please contact support or use "Already a subscriber?" to restore access.');
-        }
-      } catch (err) {
-        console.error('Verification error:', err);
-        statusBadge.textContent = 'Verification failed';
-        statusBadge.style.background = '#ef4444';
-        alert('Payment verification failed. Please contact support or use "Already a subscriber?" to restore access.');
-      }
-    }
-  }
-
-  init();
-  handleStripeSuccess();
+init();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
